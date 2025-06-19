@@ -1,0 +1,25 @@
+# File: docker-compose.yml (in the root microservice-app folder)
+version: '3.8' # Using a slightly newer version, '3' is also fine
+
+services:
+  web:
+    build: ./app # Tells Compose to build the image from the Dockerfile in the 'app' subfolder
+    ports:
+      - "5000:5000" # Maps host port 5000 to container port 5000
+    depends_on:
+      - db        # Waits for the db service to be healthy (basic check) before starting web
+
+  db:
+    image: mysql:5.7 # Uses the official MySQL 5.7 image
+    restart: always   # Ensures the DB restarts if it crashes
+    environment:
+      MYSQL_DATABASE: sampledb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306" # Maps host port 3306 to container port 3306 (optional, for direct DB access from host)
+    # volumes: # Optional: Add this if you want data to persist after 'docker-compose down'
+    #   - db_data:/var/lib/mysql
+# volumes: # Optional: Define the named volume used above
+#   db_data:
